@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using WebApi.Caching;
 using WebApi.Exceptions;
 using WebApi.Interfaces;
 using WebApi.Models.Other;
 using WebApi.Persistence.Context;
 using WebApi.Persistence.Entities;
+using WebApi.Shared.Authorization;
 using WebApi.SignalR;
 
 namespace WebApi.Services
@@ -13,11 +15,13 @@ namespace WebApi.Services
     {
         private readonly BookContext _ctx;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserInfoInMemory _userInfoInMemory;
 
-        public BookRepository(BookContext ctx, IUnitOfWork unitOfWork)
+        public BookRepository(BookContext ctx, IUnitOfWork unitOfWork, IUserInfoInMemory userInfoInMemory)
         {
             _ctx = ctx;
             _unitOfWork = unitOfWork;
+            _userInfoInMemory = userInfoInMemory;
         }
 
         public async Task<List<Book>> GetAvailableBook()
@@ -48,7 +52,7 @@ namespace WebApi.Services
 
                 if (objBook != null)
                 {
-                    await _unitOfWork.MessageRepository.SendDirectMessage("SELLER", Convert.ToString(objBook.SellerId), objBook.Seller.Username ?? "", message);
+                    await _unitOfWork.MessageRepository.SendDirectMessage(Roles.SELLER, Convert.ToString(objBook.SellerId), objBook.Seller.Username ?? "", message);
                 }
 
                 return true;
@@ -112,7 +116,8 @@ namespace WebApi.Services
 
                 var message = $"";
 
-                await _unitOfWork.MessageRepository.SendDirectMessage("CUSTOMER", Convert.ToString(customerID), customer.FirstOrDefault()?.Username ?? "", message);
+
+                await _unitOfWork.MessageRepository.SendDirectMessage(Roles.CUSTOMER, Convert.ToString(customerID), customer.FirstOrDefault()?.Username ?? "", message);
 
                 return true;
 

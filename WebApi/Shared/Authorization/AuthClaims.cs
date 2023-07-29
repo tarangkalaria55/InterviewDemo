@@ -9,3 +9,10 @@ public static class AuthClaims
     public const string Expiration = "exp";
     public const string RoleType = "RoleType";
 }
+
+
+public static class Roles
+{
+    public const string CUSTOMER = "CUSTOMER";
+    public const string SELLER = "SELLER";
+}

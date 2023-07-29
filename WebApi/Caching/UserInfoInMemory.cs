@@ -60,5 +60,10 @@ namespace WebApi.Caching
         {
             return $"{role}__{userid}__{username}";
         }
+
+        public IEnumerable<UserInfo> GetAllUsers()
+        {
+            return _onlineUser.Values;
+        }
     }
 }

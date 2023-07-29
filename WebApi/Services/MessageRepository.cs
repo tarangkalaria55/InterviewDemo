@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using WebApi.Auth;
 using WebApi.Caching;
 using WebApi.Interfaces;
 using WebApi.Repository;
@@ -19,19 +20,25 @@ namespace WebApi.Services
             _userInfoInMemory = userInfoInMemory;
         }
 
+
         public Task SendDirectMessage(string roletype, string targetUserid, string targetUserName, string message)
         {
-            var currentUserKey = _unitOfWork.CurrentUser.GetNameKey();
 
-            var userInfoSender = _userInfoInMemory.GetUserInfo(currentUserKey);
+            var currentUser = _unitOfWork.CurrentUser;
 
             var receiverKey = _userInfoInMemory.GetNameKey(targetUserid, targetUserName, roletype);
 
             var userInfoReciever = _userInfoInMemory.GetUserInfo(receiverKey);
 
-            if (userInfoSender != null)
+            if (currentUser.GetUserEmail() != null && userInfoReciever != null)
             {
-                return _hubContext.Clients.Client(userInfoReciever!.ConnectionId).SendAsync("SendDM", message, userInfoSender);
+                var objMessage = new MessageModel()
+                {
+                    Sender = currentUser.GetUserEmail()!,
+                    Receiver = userInfoReciever.UserName!,
+                    Message = "Connected"
+                };
+                return Task.FromResult(async () => await _hubContext.Clients.Client(userInfoReciever.ConnectionId).SendAsync("Send", objMessage));
             }
             return Task.FromResult(() => { return; });
 

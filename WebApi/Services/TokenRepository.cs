@@ -20,9 +20,9 @@ public class TokenRepository : ITokenRepository
         this.setting = setting;
     }
 
-    public async Task<TokenResponse> GenerateTokens(int id, string username, bool isCustomer)
+    public async Task<TokenResponse> GenerateTokens(int id, string username, string roleType)
     {
-        string token = GenerateJwt(id, username, isCustomer);
+        string token = GenerateJwt(id, username, roleType);
 
         var refreshToken = GenerateRefreshToken();
         var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(setting.Jwt.ExpireInMinutes);
@@ -31,23 +31,23 @@ public class TokenRepository : ITokenRepository
         return await Task.FromResult(tokenResp);
     }
 
-    private string GenerateJwt(int id, string username, bool isCustomer)
+    private string GenerateJwt(int id, string username, string roleType)
     {
         var credentials = GetSigningCredentials();
-        var claims = GetClaims(id, username, isCustomer);
+        var claims = GetClaims(id, username, roleType);
         return GenerateEncryptedToken(credentials, claims);
     }
 
 
-    private IEnumerable<Claim> GetClaims(int id, string username, bool isCustomer)
+    private IEnumerable<Claim> GetClaims(int id, string username, string roleType)
     {
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, Convert.ToString(id)),
             new(ClaimTypes.Email, username ?? string.Empty),
             new(AuthClaims.Username, $"{username ?? string.Empty}"),
-            new(AuthClaims.RoleType, isCustomer ? "CUSTOMER" : "SELLER"),
-            new(ClaimTypes.Role, isCustomer ? "CUSTOMER" : "SELLER")
+            new(AuthClaims.RoleType, roleType),
+            new(ClaimTypes.Role, roleType)
         };
         return claims;
     }

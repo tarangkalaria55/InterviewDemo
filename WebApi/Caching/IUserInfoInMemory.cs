@@ -13,5 +13,7 @@ namespace WebApi.Caching
         UserInfo? GetUserInfo(string? key);
 
         string GetNameKey(string userid, string username, string role);
+
+        IEnumerable<UserInfo> GetAllUsers();
     }
 }

@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using WebApi.Interfaces;
 using WebApi.Models.Request;
+using WebApi.Shared.Authorization;
 
 namespace WebApi.Controllers;
 
-[Authorize(Roles = "CUSTOMER")]
+[Authorize(Roles = Roles.CUSTOMER)]
 public class CustomerController : BaseApiController
 {
     private readonly ILogger<CustomerController> _logger;

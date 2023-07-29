@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interfaces;
 using WebApi.Models.Request;
-using WebApi.Persistence.Entities;
+using WebApi.Shared.Authorization;
 
 namespace WebApi.Controllers;
 
@@ -26,7 +26,7 @@ public class AuthenticationController : BaseApiController
 
         var customer = await _unitOfWork.UserRepository.GetCustomerByUsername(reqModel.Username ?? "", reqModel.Password ?? "");
 
-        var token = await _unitOfWork.TokenRepository.GenerateTokens(customer.CustomerId, customer.Username ?? "", true);
+        var token = await _unitOfWork.TokenRepository.GenerateTokens(customer.CustomerId, customer.Username ?? "", Roles.CUSTOMER);
 
         return Ok(new { CustomerID = customer!.CustomerId, Username = customer!.Username, Token = token.Token, TokenExpiryTime = token.RefreshTokenExpiryTime });
     }
@@ -48,7 +48,7 @@ public class AuthenticationController : BaseApiController
 
         var seller = await _unitOfWork.UserRepository.GetSellerByUsername(reqModel.Username ?? "", reqModel.Password ?? "");
 
-        var token = await _unitOfWork.TokenRepository.GenerateTokens(seller.SellerId, seller.Username ?? "", true);
+        var token = await _unitOfWork.TokenRepository.GenerateTokens(seller.SellerId, seller.Username ?? "", Roles.SELLER);
 
         return Ok(new { SellerId = seller!.SellerId, Username = seller!.Username, Token = token.Token, TokenExpiryTime = token.RefreshTokenExpiryTime });
     }

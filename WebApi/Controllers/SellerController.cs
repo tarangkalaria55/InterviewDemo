@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Interfaces;
 using WebApi.Models.Request;
+using WebApi.Shared.Authorization;
 
 namespace WebApi.Controllers;
 
-[Authorize(Roles = "SELLER")]
+[Authorize(Roles = Roles.SELLER)]
 public class SellerController : BaseApiController
 {
     private readonly ILogger<SellerController> _logger;
