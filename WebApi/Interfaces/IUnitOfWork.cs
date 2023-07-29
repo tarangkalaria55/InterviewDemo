@@ -1,7 +1,5 @@
 ﻿using WebApi.Auth;
-using WebApi.Caching;
 using WebApi.Common.Interfaces;
-using WebApi.SignalR;
 
 namespace WebApi.Interfaces;
 
@@ -13,4 +11,6 @@ public interface IUnitOfWork : ITransientService
     IUserRepository UserRepository { get; }
     IBookRepository BookRepository { get; }
     IMessageRepository MessageRepository { get; }
+
+    ICurrentUserInitializer CurrentUserInitializer { get; }
 }

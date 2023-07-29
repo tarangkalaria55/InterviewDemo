@@ -43,4 +43,9 @@ public class UnitOfWork : IUnitOfWork
         get { return _serviceProvider.GetRequiredService<IMessageRepository>(); }
     }
 
+    public ICurrentUserInitializer CurrentUserInitializer
+    {
+        get { return _serviceProvider.GetRequiredService<ICurrentUserInitializer>(); }
+    }
+
 }

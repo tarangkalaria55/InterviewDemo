@@ -10,7 +10,7 @@ using WebApi.Repository;
 namespace WebApi.SignalR
 {
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    public class MessageHub : Hub
+    public class MessageHub : Hub<IMessageHubClient>
     {
         private readonly IUserInfoInMemory _userInfoInMemory;
         private readonly IUnitOfWork _unitOfWork;
@@ -23,8 +23,10 @@ namespace WebApi.SignalR
 
         public override async Task OnConnectedAsync()
         {
-            var currentUser = new CurrentUser();
-            currentUser.SetCurrentUser(Context.User!);
+            var currentUserInitializer = _unitOfWork.ServiceProvider.GetRequiredService<ICurrentUserInitializer>();
+            currentUserInitializer.SetCurrentUser(Context.User!);
+
+            var currentUser = _unitOfWork.CurrentUser;
 
             var connectionID = this.GetConnectionId();
             Trace.TraceInformation("MapHub started. ID: {0}", connectionID);
@@ -38,9 +40,9 @@ namespace WebApi.SignalR
                 Message = "Connected"
             };
 
-            await Clients.Caller.SendAsync("Send", message);
+            await Clients.Caller.Send(message);
 
-            await Clients.Client(connectionID).SendAsync("Send", message);
+            await Clients.Client(connectionID).Send(message);
 
             await base.OnConnectedAsync();
         }
@@ -49,12 +51,12 @@ namespace WebApi.SignalR
         {
             var connectionID = this.GetConnectionId();
 
-            var currentUser = new CurrentUser();
-            currentUser.SetCurrentUser(Context.User!);
+            var currentUserInitializer = _unitOfWork.ServiceProvider.GetRequiredService<ICurrentUserInitializer>();
+            currentUserInitializer.SetCurrentUser(Context.User!);
+
+            var currentUser = _unitOfWork.CurrentUser;
 
             _userInfoInMemory.Remove(currentUser.GetNameKey());
-
-            await Clients.Caller.SendAsync("Send", currentUser.GetUserEmail()!, "Disconnected");
 
             var message = new MessageModel()
             {
@@ -63,7 +65,9 @@ namespace WebApi.SignalR
                 Message = "Disconnected"
             };
 
-            await Clients.Client(connectionID).SendAsync("Send", message);
+            await Clients.Caller.Send(message);
+
+            await Clients.Client(connectionID).Send(message);
 
             await base.OnDisconnectedAsync(ex);
         }
@@ -71,8 +75,10 @@ namespace WebApi.SignalR
 
         public Task Send(string roletype, string targetUserid, string targetUserName, string message)
         {
-            var currentUser = new CurrentUser();
-            currentUser.SetCurrentUser(Context.User!);
+            var currentUserInitializer = _unitOfWork.ServiceProvider.GetRequiredService<ICurrentUserInitializer>();
+            currentUserInitializer.SetCurrentUser(Context.User!);
+
+            var currentUser = _unitOfWork.CurrentUser;
 
             var receiverKey = _userInfoInMemory.GetNameKey(targetUserid, targetUserName, roletype);
 
@@ -88,7 +94,7 @@ namespace WebApi.SignalR
                     Message = message
                 };
 
-                return Task.FromResult(async () => await Clients.Client(userInfoReciever!.ConnectionId).SendAsync("Send", objMessage));
+                return Task.FromResult(async () => await Clients.Client(userInfoReciever!.ConnectionId).Send(objMessage));
             }
             return Task.FromResult(() => { return; });
 
@@ -96,8 +102,10 @@ namespace WebApi.SignalR
 
         public async Task Leave()
         {
-            var currentUser = new CurrentUser();
-            currentUser.SetCurrentUser(Context.User!);
+            var currentUserInitializer = _unitOfWork.ServiceProvider.GetRequiredService<ICurrentUserInitializer>();
+            currentUserInitializer.SetCurrentUser(Context.User!);
+
+            var currentUser = _unitOfWork.CurrentUser;
 
             _userInfoInMemory.Remove(currentUser.GetNameKey());
             var objMessage = new MessageModel()
@@ -106,11 +114,14 @@ namespace WebApi.SignalR
                 Receiver = currentUser.GetUserEmail()!,
                 Message = "User left"
             };
-            await Clients.AllExcept(new List<string> { this.GetConnectionId() }).SendAsync("Leave", objMessage);
+            await Clients.AllExcept(new List<string> { this.GetConnectionId() }).Leave(objMessage);
         }
 
         public async Task Join()
         {
+            var currentUserInitializer = _unitOfWork.ServiceProvider.GetRequiredService<ICurrentUserInitializer>();
+            currentUserInitializer.SetCurrentUser(Context.User!);
+
             var currentUser = _unitOfWork.CurrentUser;
 
             if (!_userInfoInMemory.AddUpdate(currentUser.GetUserId(), currentUser.GetUserEmail()!, currentUser.GetRoleType()!, this.GetConnectionId()))
@@ -120,7 +131,7 @@ namespace WebApi.SignalR
                     Sender = currentUser.GetUserEmail()!,
                     Message = $"New Online User {_userInfoInMemory.GetUserInfo(currentUser.GetNameKey())!.UserName}"
                 };
-                await Clients.AllExcept(new List<string> { this.GetConnectionId() }).SendAsync("Join", objMessage1);
+                await Clients.AllExcept(new List<string> { this.GetConnectionId() }).Join(objMessage1);
 
             }
             else
@@ -135,9 +146,9 @@ namespace WebApi.SignalR
                 Message = $"Joined : {_userInfoInMemory.GetUserInfo(currentUser.GetNameKey())!.UserName}"
             };
 
-            await Clients.Client(this.GetConnectionId()).SendAsync("Join", objMessage);
+            await Clients.Client(this.GetConnectionId()).Join(objMessage);
 
-            await Clients.Client(this.GetConnectionId()).SendAsync("Join", objMessage);
+            await Clients.Client(this.GetConnectionId()).Join(objMessage);
         }
 
         public string GetConnectionId() => Context.ConnectionId;
