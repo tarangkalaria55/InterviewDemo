@@ -2,7 +2,7 @@
 
 namespace WebApi.Caching
 {
-    public interface IUserInfoInMemory : ITransientService
+    public interface IUserInfoInMemory : ISingletonService
     {
         bool AddUpdate(string userid, string username, string roletype, string connectionId);
 

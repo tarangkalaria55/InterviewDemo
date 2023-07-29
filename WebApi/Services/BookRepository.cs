@@ -1,13 +1,10 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using WebApi.Caching;
+﻿using Microsoft.EntityFrameworkCore;
 using WebApi.Exceptions;
 using WebApi.Interfaces;
 using WebApi.Models.Other;
 using WebApi.Persistence.Context;
 using WebApi.Persistence.Entities;
 using WebApi.Shared.Authorization;
-using WebApi.SignalR;
 
 namespace WebApi.Services
 {
@@ -15,13 +12,13 @@ namespace WebApi.Services
     {
         private readonly BookContext _ctx;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IUserInfoInMemory _userInfoInMemory;
+        private readonly IMessageRepository _messageRepository;
 
-        public BookRepository(BookContext ctx, IUnitOfWork unitOfWork, IUserInfoInMemory userInfoInMemory)
+        public BookRepository(BookContext ctx, IUnitOfWork unitOfWork, IMessageRepository messageRepository)
         {
             _ctx = ctx;
             _unitOfWork = unitOfWork;
-            _userInfoInMemory = userInfoInMemory;
+            _messageRepository = messageRepository;
         }
 
         public async Task<List<Book>> GetAvailableBook()
@@ -52,7 +49,7 @@ namespace WebApi.Services
 
                 if (objBook != null)
                 {
-                    await _unitOfWork.MessageRepository.SendDirectMessage(Roles.SELLER, Convert.ToString(objBook.SellerId), objBook.Seller.Username ?? "", message);
+                    await _messageRepository.SendDirectMessage(Roles.SELLER, Convert.ToString(objBook.SellerId), objBook.Seller.Username ?? "", message);
                 }
 
                 return true;
@@ -117,7 +114,7 @@ namespace WebApi.Services
                 var message = $"";
 
 
-                await _unitOfWork.MessageRepository.SendDirectMessage(Roles.CUSTOMER, Convert.ToString(customerID), customer.FirstOrDefault()?.Username ?? "", message);
+                await _messageRepository.SendDirectMessage(Roles.CUSTOMER, Convert.ToString(customerID), customer.FirstOrDefault()?.Username ?? "", message);
 
                 return true;
 

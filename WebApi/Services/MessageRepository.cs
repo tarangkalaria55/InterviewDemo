@@ -10,10 +10,10 @@ namespace WebApi.Services
     public class MessageRepository : IMessageRepository
     {
 
-        private readonly IHubContext<MessageHub> _hubContext;
+        private readonly IHubContext<MessageHub, IMessageHubClient> _hubContext;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUserInfoInMemory _userInfoInMemory;
-        public MessageRepository(IHubContext<MessageHub> hubContext, IUnitOfWork unitOfWork, IUserInfoInMemory userInfoInMemory)
+        public MessageRepository(IHubContext<MessageHub, IMessageHubClient> hubContext, IUnitOfWork unitOfWork, IUserInfoInMemory userInfoInMemory)
         {
             _hubContext = hubContext;
             _unitOfWork = unitOfWork;
@@ -21,7 +21,7 @@ namespace WebApi.Services
         }
 
 
-        public Task SendDirectMessage(string roletype, string targetUserid, string targetUserName, string message)
+        public async Task SendDirectMessage(string roletype, string targetUserid, string targetUserName, string message)
         {
 
             var currentUser = _unitOfWork.CurrentUser;
@@ -38,9 +38,8 @@ namespace WebApi.Services
                     Receiver = userInfoReciever.UserName!,
                     Message = "Connected"
                 };
-                return Task.FromResult(async () => await _hubContext.Clients.Client(userInfoReciever.ConnectionId).SendAsync("Send", objMessage));
+                await _hubContext.Clients.Client(userInfoReciever.ConnectionId).Send(objMessage);
             }
-            return Task.FromResult(() => { return; });
 
         }
     }
