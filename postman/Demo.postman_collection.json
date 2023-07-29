@@ -1,0 +1,234 @@
+{
+	"info": {
+		"_postman_id": "664fdfae-cb0c-4866-ac9f-a4a5e1ad7985",
+		"name": "Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12397749"
+	},
+	"item": [
+		{
+			"name": "/api/authentication/customersignin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"username\": \"a\",\r\n  \"password\": \"a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/authentication/customersignin",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"authentication",
+						"customersignin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/authentication/customersignup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"a\",\r\n    \"password\": \"a\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/authentication/customersignup",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"authentication",
+						"customersignup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/authentication/sellersignin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"string\",\r\n    \"password\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/authentication/sellersignin",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"authentication",
+						"sellersignin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/customer/getavailablebook",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/customer/getavailablebook",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"customer",
+						"getavailablebook"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/customer/requestforpurchasebook",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"bookId\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/customer/requestforpurchasebook",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"customer",
+						"requestforpurchasebook"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/seller/getcurrentoffersbysellerid",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/seller/getcurrentoffersbysellerid",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"seller",
+						"getcurrentoffersbysellerid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/api/seller/acceptpurchaseoffer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sellerId\": 0,\r\n    \"bookId\": 0,\r\n    \"customerId\": 0\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/seller/acceptpurchaseoffer",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"seller",
+						"acceptpurchaseoffer"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjExIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiYSIsImZ1bGxOYW1lIjoiYSIsIlJvbGVUeXBlIjoiQ1VTVE9NRVIiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJDVVNUT01FUiIsImV4cCI6MTY5MDY1MTU3MH0.tbft8WP8bxXKos01XKqvXCfI7isk41-iuSkPP-cQ8wM",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://localhost:7097",
+			"type": "string"
+		}
+	]
+}
