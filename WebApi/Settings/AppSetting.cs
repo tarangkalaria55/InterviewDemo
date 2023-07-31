@@ -10,8 +10,6 @@ public class AppSetting
     public Jwt Jwt { get; set; } = new();
     public Dictionary<string, string> FileProvider { get; set; } = new();
     public LoggerSettings LoggerSettings { get; set; } = new();
-    public LocalizationSettings LocalizationSettings { get; set; } = new();
-    public MailSettings MailSettings { get; set; } = new();
 }
 
 public class ConnectionStrings
@@ -51,27 +49,3 @@ public class LoggerSettings
     public string MinimumLogLevel { get; set; } = "Information";
 }
 
-public class LocalizationSettings
-{
-    public bool? EnableLocalization { get; set; }
-    public string? ResourcesPath { get; set; }
-    public string[]? SupportedCultures { get; set; }
-    public string? DefaultRequestCulture { get; set; }
-    public bool? FallbackToParent { get; set; }
-}
-
-public class MailSettings
-{
-    public string? From { get; set; }
-
-    public string? Host { get; set; }
-
-    public int Port { get; set; }
-
-    public string? UserName { get; set; }
-
-    public string? Password { get; set; }
-
-    public string? DisplayName { get; set; }
-    public string? TemplateFolder { get; set; }
-}
