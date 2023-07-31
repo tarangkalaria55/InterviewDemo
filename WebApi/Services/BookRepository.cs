@@ -39,13 +39,14 @@ namespace WebApi.Services
                     CustomerId = Convert.ToInt32(customerID),
                 };
 
+                var objBook = await book.Include(m => m.Seller).FirstOrDefaultAsync();
+
                 await _ctx.Orders.AddAsync(order);
 
                 await _ctx.SaveChangesAsync();
 
-                var message = $"";
+                var message = $"customer {_unitOfWork.CurrentUser.GetUserEmail()} wants to purchase a {objBook!.Title} with price {objBook!.Price}.";
 
-                var objBook = await book.Include(m => m.Seller).FirstOrDefaultAsync();
 
                 if (objBook != null)
                 {
@@ -111,7 +112,7 @@ namespace WebApi.Services
 
                 await _ctx.SaveChangesAsync();
 
-                var message = $"";
+                var message = $"purchase request of a {book.Title} with price {book.Price} has been accepted";
 
 
                 await _messageRepository.SendDirectMessage(Roles.CUSTOMER, Convert.ToString(customerID), customer.FirstOrDefault()?.Username ?? "", message);

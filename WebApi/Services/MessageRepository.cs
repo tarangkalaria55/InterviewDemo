@@ -36,7 +36,7 @@ namespace WebApi.Services
                 {
                     Sender = currentUser.GetUserEmail()!,
                     Receiver = userInfoReciever.UserName!,
-                    Message = "Connected"
+                    Message = message
                 };
                 await _hubContext.Clients.Client(userInfoReciever.ConnectionId).Send(objMessage);
             }
