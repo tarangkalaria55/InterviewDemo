@@ -4,9 +4,7 @@ public static class Startup
 {
     public static IServiceCollection AddSettings(this IServiceCollection services, IConfiguration configuration)
     {
-        var appSetting = new AppSetting();
-        configuration.Bind(appSetting);
-        services.AddSingleton(appSetting);
+        services.AddSingleton<AppSetting>(option => configuration.Get<AppSetting>()!);
         return services;
     }
 }

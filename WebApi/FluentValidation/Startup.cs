@@ -6,10 +6,10 @@ namespace WebApi.FluentValidation;
 
 public static class Startup
 {
-    public static void AddValidation(this IServiceCollection services, Assembly assembly)
+    public static IServiceCollection AddValidation(this IServiceCollection services, Assembly assembly)
     {
         services.AddFluentValidationClientsideAdapters();
         services.AddValidatorsFromAssembly(assembly);
-
+        return services;
     }
 }

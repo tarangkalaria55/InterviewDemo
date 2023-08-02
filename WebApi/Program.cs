@@ -29,23 +29,16 @@ try
 
     // Add services to the container.
 
-    builder.Services.AddSettings(builder.Configuration);
-
-    builder.Services.AddSignals();
-
-    builder.Services.AddPersistence();
-
-    builder.Services.AddAuth();
-
-    builder.Services.AddCorsPolicy();
-
-    builder.Services.AddExceptionMiddleware();
-
-    builder.Services.AddValidation(assembly);
-
-    builder.Services.AddRouting(options => options.LowercaseUrls = true);
-
-    builder.Services.AddServices(AppDomain.CurrentDomain);
+    builder.Services
+        .AddSettings(builder.Configuration)
+        .AddSignals()
+        .AddPersistence()
+        .AddAuth()
+        .AddCorsPolicy()
+        .AddExceptionMiddleware()
+        .AddValidation(assembly)
+        .AddRouting(options => options.LowercaseUrls = true)
+        .AddServices(AppDomain.CurrentDomain);
 
 
     builder.Services.AddControllers();
@@ -59,14 +52,15 @@ try
 
     app.UseSerilogRequestLogging();
 
-    app.UseSwaggerSetting();
-    app.UseStaticFilesSetup();
-    app.UseExceptionMiddleware();
-    app.UseRouting();
-    app.UseCorsPolicy();
-    app.UseAuthentication();
-    app.UseCurrentUser();
-    app.UseAuthorization();
+    app
+        .UseSwaggerSetting()
+        .UseStaticFilesSetup()
+        .UseExceptionMiddleware()
+        .UseRouting()
+        .UseCorsPolicy()
+        .UseAuthentication()
+        .UseCurrentUser()
+        .UseAuthorization();
 
     app.UseHttpsRedirection();
 
